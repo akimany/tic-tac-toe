@@ -34,10 +34,9 @@ $(function() {
       addUserTime(timeIntervals)
       var pattern = definePatternForCurrentPlayer(player)
       changeState(td, pattern)
-      if (checkIfPlayerWon(table, pattern)) {
-        messages.html('Player ' + player + ' has won.')
-        turn.html('')
-        countPlayerTally(player, playerTally)
+
+      if (checkIfPlayerWon(table, pattern, player)) {
+        messageTurnTally(turn, messages, player, playerTally)
       }
 
       tdList = $(tdList).filter(function(i, e) {
@@ -45,18 +44,16 @@ $(function() {
           return e
         }
       })
+
       var singleTd = $(tdList[getRandomNumber(tdList.length)])
       player = setNextPlayer(player)
       pattern = definePatternForCurrentPlayer(player)
       changeState(singleTd, pattern)
-
       countMoves(player)
       printAverageTime(timeIntervals)
 
-      if (checkIfPlayerWon(table, pattern)) {
-        messages.html('Player ' + player + ' has won.')
-        turn.html('')
-        countPlayerTally(player, playerTally)
+      if (checkIfPlayerWon(table, pattern, player)) {
+        messageTurnTally(turn, messages, player, playerTally)
       } else {
         player = setNextPlayer(player)
         displayNextPlayer(turn, player)
@@ -78,6 +75,12 @@ $(function() {
     tdList.removeClass('completed')
   })
 })
+
+function messageTurnTally(turn, messages, player, playerTally) {
+  messages.html('Player ' + player + ' has won.')
+  turn.html('')
+  countPlayerTally(player, playerTally)
+}
 
 function countPlayerTally(player, playerTally) {
   if (player === 1) {
@@ -154,7 +157,7 @@ function displayNextPlayer(turn, player) {
   turn.html('Player turn : ' + player)
 }
 
-function checkIfPlayerWon(table, pattern) {
+function checkIfPlayerWon(table, pattern, player) {
   var won = 0
 
   if (
