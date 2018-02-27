@@ -24,6 +24,7 @@ $(function() {
     player1: { wins: 0, losses: 0 },
     player2: { wins: 0, losses: 0 }
   }
+  var singleTd
   displayNextPlayer(turn, player)
 
   $('.ticTable td').click(function() {
@@ -39,16 +40,9 @@ $(function() {
         messageTurnTally(turn, messages, player, playerTally)
       }
 
-      tdList = $(tdList).filter(function(i, e) {
-        if (!$(e).hasClass('cross') && !$(e).hasClass('circle')) {
-          return e
-        }
-      })
-
-      var singleTd = $(tdList[getRandomNumber(tdList.length)])
       player = setNextPlayer(player)
       pattern = definePatternForCurrentPlayer(player)
-      changeState(singleTd, pattern)
+      changeState(returnSingleTd(tdList, singleTd), pattern)
       countMoves(player)
       printAverageTime(timeIntervals)
 
@@ -75,6 +69,16 @@ $(function() {
     tdList.removeClass('completed')
   })
 })
+
+function returnSingleTd(tdList) {
+  tdList = $(tdList).filter(function(i, e) {
+    if (!$(e).hasClass('cross') && !$(e).hasClass('circle')) {
+      return e
+    }
+  })
+  singleTd = $(tdList[getRandomNumber(tdList.length)])
+  return singleTd
+}
 
 function messageTurnTally(turn, messages, player, playerTally) {
   messages.html('Player ' + player + ' has won.')
