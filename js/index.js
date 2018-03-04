@@ -40,18 +40,23 @@ $(function() {
         messageTurnTally(turn, messages, player, playerTally)
       }
 
-      player = setNextPlayer(player)
-      pattern = definePatternForCurrentPlayer(player)
-      changeState(returnSingleTd(tdList, singleTd), pattern)
-      countMoves(player)
-      printAverageTime(timeIntervals)
-
-      if (checkIfPlayerWon(table, pattern, player)) {
-        messageTurnTally(turn, messages, player, playerTally)
-      } else {
-        player = setNextPlayer(player)
-        displayNextPlayer(turn, player)
-      }
+      p2(
+        player,
+        pattern,
+        changeState,
+        returnSingleTd,
+        tdList,
+        singleTd,
+        timeIntervals,
+        table,
+        checkIfPlayerWon,
+        messageTurnTally,
+        turn,
+        messages,
+        playerTally,
+        setNextPlayer,
+        displayNextPlayer
+      )
     } else {
       messages.html('This box is already checked.')
     }
@@ -69,6 +74,37 @@ $(function() {
     tdList.removeClass('completed')
   })
 })
+
+function p2(
+  player,
+  pattern,
+  changeState,
+  returnSingleTd,
+  tdList,
+  singleTd,
+  timeIntervals,
+  table,
+  checkIfPlayerWon,
+  messageTurnTally,
+  turn,
+  messages,
+  playerTally,
+  setNextPlayer,
+  displayNextPlayer
+) {
+  player = setNextPlayer(player)
+  pattern = definePatternForCurrentPlayer(player)
+  changeState(returnSingleTd(tdList, singleTd), pattern)
+  countMoves(player)
+  printAverageTime(timeIntervals)
+
+  if (checkIfPlayerWon(table, pattern, player)) {
+    messageTurnTally(turn, messages, player, playerTally)
+  } else {
+    player = setNextPlayer(player)
+    displayNextPlayer(turn, player)
+  }
+}
 
 function returnSingleTd(tdList) {
   tdList = $(tdList).filter(function(i, e) {
