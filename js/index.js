@@ -25,6 +25,8 @@ $(function() {
     player2: { wins: 0, losses: 0 }
   }
   var singleTd
+  var playerMove = []
+
   displayNextPlayer(turn, player)
 
   $('.ticTable td').click(function() {
@@ -39,24 +41,66 @@ $(function() {
       if (checkIfPlayerWon(table, pattern, player)) {
         messageTurnTally(turn, messages, player, playerTally)
       }
+      // it might be said:
+      player = setNextPlayer(player)
+      pattern = definePatternForCurrentPlayer(player)
+      var p2Td = returnSingleTd(tdList)
 
-      p2(
-        player,
-        pattern,
-        changeState,
-        returnSingleTd,
-        tdList,
-        singleTd,
-        timeIntervals,
-        table,
-        checkIfPlayerWon,
-        messageTurnTally,
-        turn,
-        messages,
-        playerTally,
-        setNextPlayer,
-        displayNextPlayer
-      )
+      function blockPlayer(currentPlayerMove) {
+        // player wins by having three in a row
+        // to check if the player is about to win
+        // check against the state of the board
+        var boardState = [[' ', ' ', ' '], [' ', ' ', ' '], [' ', ' ', ' ']]
+        // or against a set of combinations - check if there are any more
+        // it might be said:
+        var boardCombinations = [
+          [1, 2, 3],
+          [1, 5, 9],
+          [1, 4, 7],
+          [2, 5, 8],
+          [3, 6, 9],
+          [3, 5, 7],
+          [4, 5, 6],
+          [7, 8, 9]
+        ]
+        // an ongoing array that contains a list of the player moves.
+        playerMove.push(currentPlayerMove)
+        let playerMoveClasses = playerMove.map(e => {
+          return Number(
+            $(e)
+              .attr('class')
+              .replace('item', '')
+              .split(' ')[0]
+          )
+        })
+        //it might be said:
+        function forBlocker(arr) {}
+        let blocker = boardCombinations.filter(e => {
+          // direct array comaparsion not working - due to value being held by reference?
+          var compareStringBoard = e.toString().replace(/,/g, '')
+          var compareStringPlayer = playerMoveClasses
+            .toString()
+            .replace(/,/g, '')
+          console.log(compareStringBoard, compareStringPlayer)
+          if (compareStringBoard.indexOf(compareStringPlayer) != -1) {
+            return e
+          }
+        })
+        console.log(blocker)
+        return blocker
+      }
+      blockPlayer(td)
+
+      changeState(p2Td, pattern)
+      countMoves(player)
+      printAverageTime(timeIntervals)
+
+      if (checkIfPlayerWon(table, pattern, player)) {
+        messageTurnTally(turn, messages, player, playerTally)
+      } else {
+        player = setNextPlayer(player)
+        displayNextPlayer(turn, player)
+      }
     } else {
       messages.html('This box is already checked.')
     }
@@ -74,37 +118,6 @@ $(function() {
     tdList.removeClass('completed')
   })
 })
-
-function p2(
-  player,
-  pattern,
-  changeState,
-  returnSingleTd,
-  tdList,
-  singleTd,
-  timeIntervals,
-  table,
-  checkIfPlayerWon,
-  messageTurnTally,
-  turn,
-  messages,
-  playerTally,
-  setNextPlayer,
-  displayNextPlayer
-) {
-  player = setNextPlayer(player)
-  pattern = definePatternForCurrentPlayer(player)
-  changeState(returnSingleTd(tdList, singleTd), pattern)
-  countMoves(player)
-  printAverageTime(timeIntervals)
-
-  if (checkIfPlayerWon(table, pattern, player)) {
-    messageTurnTally(turn, messages, player, playerTally)
-  } else {
-    player = setNextPlayer(player)
-    displayNextPlayer(turn, player)
-  }
-}
 
 function returnSingleTd(tdList) {
   tdList = $(tdList).filter(function(i, e) {
