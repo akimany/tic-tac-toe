@@ -75,10 +75,15 @@ $(function() {
         })
         //it might be said:
         function forBlocker(arr) {}
+        // do it the other way around: go through the blocks already selected and look for a partial match (2) of the potential boardCombinations
         let blocker = boardCombinations.filter(e => {
-          // direct array comaparsion not working - due to value being held by reference?
-          var compareStringBoard = e.toString().replace(/,/g, '')
+          // direct array comaparsion not working - due to arrays being held by reference?
+          var compareStringBoard = e
+            .sort()
+            .toString()
+            .replace(/,/g, '')
           var compareStringPlayer = playerMoveClasses
+            .sort()
             .toString()
             .replace(/,/g, '')
           console.log(compareStringBoard, compareStringPlayer)
