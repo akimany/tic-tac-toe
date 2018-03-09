@@ -78,6 +78,7 @@ $(function() {
         var counter = 0
         var holdArrays = []
         var uniq
+        var blockSelector = []
         let blocker = playerMoveClasses.forEach(e => {
           // direct array comaparsion not working - due to arrays being held by reference?
           // playerMoveClasses [1, 2, 4]
@@ -102,11 +103,21 @@ $(function() {
               )
             })
             .map(e => {
-              e.map(e => {
+              e.forEach(e => {
                 console.log(e)
+                blockSelector.push($('.item' + e + ''))
+                return blockSelector
               })
             })
-          console.log(uniq)
+
+          var checkit = blockSelector.filter(e => {
+            if ($(e).not('.circle') && $(e).not('.cross')) {
+              return $(e)
+            }
+          })
+
+          console.log(checkit)
+
           return uniq
         })
         return uniq
