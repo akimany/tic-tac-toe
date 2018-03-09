@@ -77,6 +77,7 @@ $(function() {
         // do it the other way around: go through the blocks already selected and look for a partial match (2) of the potential boardCombinations
         var counter = 0
         var holdArrays = []
+        var uniq
         let blocker = playerMoveClasses.forEach(e => {
           // direct array comaparsion not working - due to arrays being held by reference?
           // playerMoveClasses [1, 2, 4]
@@ -93,24 +94,24 @@ $(function() {
             }
           }
 
-          var uniq = holdArrays.filter((elem, i) => {
-            return (
-              holdArrays.lastIndexOf(elem) == i && holdArrays.indexOf(elem) != i
-            )
-          })
+          uniq = holdArrays
+            .filter((elem, i) => {
+              return (
+                holdArrays.lastIndexOf(elem) == i &&
+                holdArrays.indexOf(elem) != i
+              )
+            })
+            .map(e => {
+              console.log(e)
+            })
 
           return uniq
         })
-        var nodeList = uniq.map(elem => {
-          var item = elem + '2'
-          return item
-        })
-
-        console.log(nodeList)
-        return blocker
+        return uniq
       }
 
-      blockPlayer(td)
+      var trying = blockPlayer(td).map(e => {})
+      //console.log(trying)
 
       changeState(p2Td, pattern)
       countMoves(player)
