@@ -86,22 +86,30 @@ $(function() {
             for (var j = 0; j < boardCombinations[i].length; j++) {
               if (
                 boardCombinations[i][j] === e &&
-                holdArrays.indexOf(boardCombinations[i]) === -1
+                holdArrays.indexOf(boardCombinations[i])
               ) {
                 holdArrays.push(boardCombinations[i])
               }
             }
           }
-          // if (compareStringBoard.indexOf(compareStringPlayer) != -1) {
-          //   return e
-          // }
-          console.log(holdArrays)
-          return holdArrays
+
+          var uniq = holdArrays.filter((elem, i) => {
+            return (
+              holdArrays.lastIndexOf(elem) == i && holdArrays.indexOf(elem) != i
+            )
+          })
+
+          return uniq
+        })
+        var nodeList = uniq.map(elem => {
+          var item = elem + '2'
+          return item
         })
 
-        console.log(blocker)
+        console.log(nodeList)
         return blocker
       }
+
       blockPlayer(td)
 
       changeState(p2Td, pattern)
