@@ -75,25 +75,30 @@ $(function() {
         })
         //it might be said:
         // do it the other way around: go through the blocks already selected and look for a partial match (2) of the potential boardCombinations
-        let blocker = playerMoveClasses.filter(e => {
-          var counter = 0
+        var counter = 0
+        var holdArrays = []
+        let blocker = playerMoveClasses.forEach(e => {
           // direct array comaparsion not working - due to arrays being held by reference?
           // playerMoveClasses [1, 2, 4]
           // boardCombinations [1, 2, 3], [1, 5, 9], [1, 4, 7],
+          //playerMoveClasses gets built up as the game is played
           for (var i = 0; i < boardCombinations.length; i++) {
             for (var j = 0; j < boardCombinations[i].length; j++) {
-              if (e === boardCombinations[i][j]) {
-                counter++
-                console.log(boardCombinations[i])
+              if (
+                boardCombinations[i][j] === e &&
+                holdArrays.indexOf(boardCombinations[i]) === -1
+              ) {
+                holdArrays.push(boardCombinations[i])
               }
             }
           }
-          console.log(counter)
-
           // if (compareStringBoard.indexOf(compareStringPlayer) != -1) {
           //   return e
           // }
+          console.log(holdArrays)
+          return holdArrays
         })
+
         console.log(blocker)
         return blocker
       }
