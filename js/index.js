@@ -65,7 +65,7 @@ $(function() {
         ]
         // an ongoing array that contains a list of the player moves.
         playerMove.push(currentPlayerMove)
-        let playerMoveClasses = playerMove.map(e => {
+        var playerMoveClasses = playerMove.map(e => {
           return Number(
             $(e)
               .attr('class')
@@ -102,9 +102,11 @@ $(function() {
               )
             })
             .map(e => {
-              console.log(e)
+              e.map(e => {
+                console.log(e)
+              })
             })
-
+          console.log(uniq)
           return uniq
         })
         return uniq
