@@ -73,6 +73,7 @@ $(function() {
               .split(' ')[0]
           )
         })
+
         //it might be said:
         // do it the other way around: go through the blocks already selected and look for a partial match (2) of the potential boardCombinations
         var counter = 0
@@ -84,6 +85,7 @@ $(function() {
           // playerMoveClasses [1, 2, 4]
           // boardCombinations [1, 2, 3], [1, 5, 9], [1, 4, 7],
           //playerMoveClasses gets built up as the game is played
+
           for (var i = 0; i < boardCombinations.length; i++) {
             for (var j = 0; j < boardCombinations[i].length; j++) {
               if (
@@ -91,40 +93,46 @@ $(function() {
                 holdArrays.indexOf(boardCombinations[i])
               ) {
                 holdArrays.push(boardCombinations[i])
+                //console.log(holdArrays) // this seems to return what is needed for the later code
               }
             }
           }
-
-          uniq = holdArrays
-            .filter((elem, i) => {
-              return (
-                holdArrays.lastIndexOf(elem) == i &&
-                holdArrays.indexOf(elem) != i
-              )
-            })
-            .map(e => {
-              e.forEach(e => {
-                console.log(e)
-                blockSelector.push($('.item' + e + ''))
-                return blockSelector
-              })
-            })
-
-          var checkit = blockSelector.filter(e => {
-            if ($(e).not('.circle') && $(e).not('.cross')) {
-              return $(e)
+          //it might be said
+          // uniq = holdArrays.filter((elem, i) => {
+          //   return (
+          //     holdArrays.lastIndexOf(elem) == i && holdArrays.indexOf(elem) != i
+          // here you want to return the array that is duplicated - check what lastIndexOf - (search backwards through an array) and indexOf (search an arry for a matching element) are doing - p175 of the pdf
+          // issue seems to be here
+          //   )
+          // })
+          uniq = holdArrays.sort()
+          var results = []
+          for (var i = 0; i < uniq.length - 1; i++) {
+            if (uniq[i + 1] == uniq[i]) {
+              results.push(uniq[i])
             }
+          }
+          console.log(results)
+          results.map(e => {
+            e.forEach(e => {
+              blockSelector.push($('.item' + e + ''))
+              return blockSelector
+            })
           })
 
-          console.log(checkit)
-
+          for (var i = 0; i < blockSelector.length; i++) {
+            if (!$(blockSelector[i]).hasClass('cross')) {
+              if (!$(blockSelector[i]).hasClass('circle')) {
+                var checkit = $(blockSelector[i])
+              }
+            }
+          }
           return uniq
         })
         return uniq
       }
 
-      var trying = blockPlayer(td).map(e => {})
-      //console.log(trying)
+      blockPlayer(td)
 
       changeState(p2Td, pattern)
       countMoves(player)
