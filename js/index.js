@@ -76,10 +76,10 @@ $(function() {
 
         //it might be said:
         // do it the other way around: go through the blocks already selected and look for a partial match (2) of the potential boardCombinations
-        var counter = 0
         var holdArrays = []
         var uniq
         var blockSelector = []
+        var checkit
         let blocker = playerMoveClasses.forEach(e => {
           // direct array comaparsion not working - due to arrays being held by reference?
           // playerMoveClasses [1, 2, 4]
@@ -89,22 +89,12 @@ $(function() {
           for (var i = 0; i < boardCombinations.length; i++) {
             for (var j = 0; j < boardCombinations[i].length; j++) {
               if (boardCombinations[i][j] == e) {
-                //console.log(boardCombinations[i])
                 holdArrays.push(boardCombinations[i])
               }
             }
           }
 
-          //it might be said
-          // uniq = holdArrays.filter((elem, i) => {
-          //   return (
-          //     holdArrays.lastIndexOf(elem) == i && holdArrays.indexOf(elem) != i
-          // here you want to return the array that is duplicated - check what lastIndexOf - (search backwards through an array) and indexOf (search an arry for a matching element) are doing - p175 of the pdf
-          // issue seems to be here
-          //   )
-          // })
           uniq = holdArrays.sort()
-          console.log(holdArrays)
 
           var results = []
           for (var i = 0; i < uniq.length - 1; i++) {
@@ -122,17 +112,26 @@ $(function() {
           for (var i = 0; i < blockSelector.length; i++) {
             if (!$(blockSelector[i]).hasClass('cross')) {
               if (!$(blockSelector[i]).hasClass('circle')) {
-                var checkit = $(blockSelector[i])
-                console.log(checkit)
+                checkit = $(blockSelector[i])
               }
             }
           }
-          return uniq
         })
-        return uniq
+        if (checkit) {
+          changeState(checkit, pattern)
+        } else {
+          console.log(null)
+        }
       }
 
       blockPlayer(td)
+      // if (blockPlayer(td) && pattern === 'cross') {
+      //   console.log('yep')
+      //   $(blockPlayer(td)).hide()
+      //   // from here
+      // } else {
+      //   console.log('nope')
+      // }
 
       changeState(p2Td, pattern)
       countMoves(player)
