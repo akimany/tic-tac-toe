@@ -41,99 +41,11 @@ $(function() {
       if (checkIfPlayerWon(table, pattern, player)) {
         messageTurnTally(turn, messages, player, playerTally)
       }
-      // it might be said:
       player = setNextPlayer(player)
       pattern = definePatternForCurrentPlayer(player)
       var p2Td = returnSingleTd(tdList)
 
-      function blockPlayer(currentPlayerMove) {
-        // player wins by having three in a row
-        // to check if the player is about to win
-        // check against the state of the board
-        var boardState = [[' ', ' ', ' '], [' ', ' ', ' '], [' ', ' ', ' ']]
-        // or against a set of combinations - check if there are any more
-        // it might be said:
-        var boardCombinations = [
-          [1, 2, 3],
-          [1, 5, 9],
-          [1, 4, 7],
-          [2, 5, 8],
-          [3, 6, 9],
-          [3, 5, 7],
-          [4, 5, 6],
-          [7, 8, 9]
-        ]
-        // an ongoing array that contains a list of the player moves.
-        playerMove.push(currentPlayerMove)
-        var playerMoveClasses = playerMove.map(e => {
-          return Number(
-            $(e)
-              .attr('class')
-              .replace('item', '')
-              .split(' ')[0]
-          )
-        })
-
-        //it might be said:
-        // do it the other way around: go through the blocks already selected and look for a partial match (2) of the potential boardCombinations
-        var holdArrays = []
-        var uniq
-        var blockSelector = []
-        var checkit
-        let blocker = playerMoveClasses.forEach(e => {
-          // direct array comaparsion not working - due to arrays being held by reference?
-          // playerMoveClasses [1, 2, 4]
-          // boardCombinations [1, 2, 3], [1, 5, 9], [1, 4, 7],
-          //playerMoveClasses gets built up as the game is played
-
-          for (var i = 0; i < boardCombinations.length; i++) {
-            for (var j = 0; j < boardCombinations[i].length; j++) {
-              if (boardCombinations[i][j] == e) {
-                holdArrays.push(boardCombinations[i])
-              }
-            }
-          }
-
-          uniq = holdArrays.sort()
-
-          var results = []
-          for (var i = 0; i < uniq.length - 1; i++) {
-            if (uniq[i + 1] == uniq[i]) {
-              results.push(uniq[i])
-            }
-          }
-          results.map(e => {
-            e.forEach(e => {
-              blockSelector.push($('.item' + e + ''))
-              return blockSelector
-            })
-          })
-
-          for (var i = 0; i < blockSelector.length; i++) {
-            if (!$(blockSelector[i]).hasClass('cross')) {
-              if (!$(blockSelector[i]).hasClass('circle')) {
-                checkit = $(blockSelector[i])
-              }
-            }
-          }
-        })
-        if (checkit) {
-          changeState(checkit, pattern)
-        } else {
-          console.log(null)
-        }
-      }
-
-      blockPlayer(td)
-      // if (blockPlayer(td) && pattern === 'cross') {
-      //   console.log('yep')
-      //   $(blockPlayer(td)).hide()
-      //   // from here
-      // } else {
-      //   console.log('nope')
-      // }
-
-      changeState(p2Td, pattern)
+      blockPlayer(td, p2Td, pattern, playerMove)
       countMoves(player)
       printAverageTime(timeIntervals)
 
@@ -160,6 +72,79 @@ $(function() {
     tdList.removeClass('completed')
   })
 })
+
+function blockPlayer(currentPlayerMove, p2Td, pattern, playerMove) {
+  // player wins by having three in a row
+  // to check if the player is about to win
+  //check against a set of combinations - check if there are any more
+  var boardCombinations = [
+    [1, 2, 3],
+    [1, 5, 9],
+    [1, 4, 7],
+    [2, 5, 8],
+    [3, 6, 9],
+    [3, 5, 7],
+    [4, 5, 6],
+    [7, 8, 9]
+  ]
+  // an ongoing array that contains a list of the player moves.
+  playerMove.push(currentPlayerMove)
+  var playerMoveClasses = playerMove.map(e => {
+    return Number(
+      $(e)
+        .attr('class')
+        .replace('item', '')
+        .split(' ')[0]
+    )
+  })
+
+  // do it the other way around: go through the blocks already selected and look for a partial match (2) of the potential boardCombinations
+  var holdArrays = [],
+    blockSelector = [],
+    uniq,
+    checkit
+  var blocker = playerMoveClasses.forEach(e => {
+    // example: playerMoveClasses [1, 2, 4]
+    // example: boardCombinations [1, 2, 3], [1, 5, 9], [1, 4, 7],
+    // playerMoveClasses gets built up as the game is played
+
+    for (var i = 0; i < boardCombinations.length; i++) {
+      for (var j = 0; j < boardCombinations[i].length; j++) {
+        if (boardCombinations[i][j] == e) {
+          holdArrays.push(boardCombinations[i])
+        }
+      }
+    }
+
+    uniq = holdArrays.sort()
+
+    var results = []
+    for (var i = 0; i < uniq.length - 1; i++) {
+      if (uniq[i + 1] == uniq[i]) {
+        results.push(uniq[i])
+      }
+    }
+    results.map(e => {
+      e.forEach(e => {
+        blockSelector.push($('.item' + e + ''))
+        return blockSelector
+      })
+    })
+
+    for (var i = 0; i < blockSelector.length; i++) {
+      if (!$(blockSelector[i]).hasClass('cross')) {
+        if (!$(blockSelector[i]).hasClass('circle')) {
+          checkit = $(blockSelector[i])
+        }
+      }
+    }
+  })
+  if (checkit) {
+    changeState(checkit, pattern)
+  } else {
+    changeState(p2Td, pattern)
+  }
+}
 
 function returnSingleTd(tdList) {
   tdList = $(tdList).filter(function(i, e) {
