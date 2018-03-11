@@ -44,7 +44,6 @@ $(function() {
       player = setNextPlayer(player)
       pattern = definePatternForCurrentPlayer(player)
       var p2Td = returnSingleTd(tdList)
-
       blockPlayer(td, p2Td, pattern, playerMove)
       countMoves(player)
       printAverageTime(timeIntervals)
@@ -74,19 +73,20 @@ $(function() {
 })
 
 function blockPlayer(currentPlayerMove, p2Td, pattern, playerMove) {
-  // player wins by having three in a row
-  // to check if the player is about to win
-  //check against a set of combinations - check if there are any more
-  var boardCombinations = [
-    [1, 2, 3],
-    [1, 5, 9],
-    [1, 4, 7],
-    [2, 5, 8],
-    [3, 6, 9],
-    [3, 5, 7],
-    [4, 5, 6],
-    [7, 8, 9]
-  ]
+  var holdArrays = [],
+    blockSelector = [],
+    uniq,
+    blockTd,
+    boardCombinations = [
+      [1, 2, 3],
+      [1, 5, 9],
+      [1, 4, 7],
+      [2, 5, 8],
+      [3, 6, 9],
+      [3, 5, 7],
+      [4, 5, 6],
+      [7, 8, 9]
+    ]
   // an ongoing array that contains a list of the player moves.
   playerMove.push(currentPlayerMove)
   var playerMoveClasses = playerMove.map(e => {
@@ -98,11 +98,6 @@ function blockPlayer(currentPlayerMove, p2Td, pattern, playerMove) {
     )
   })
 
-  // do it the other way around: go through the blocks already selected and look for a partial match (2) of the potential boardCombinations
-  var holdArrays = [],
-    blockSelector = [],
-    uniq,
-    checkit
   var blocker = playerMoveClasses.forEach(e => {
     // example: playerMoveClasses [1, 2, 4]
     // example: boardCombinations [1, 2, 3], [1, 5, 9], [1, 4, 7],
@@ -124,6 +119,7 @@ function blockPlayer(currentPlayerMove, p2Td, pattern, playerMove) {
         results.push(uniq[i])
       }
     }
+
     results.map(e => {
       e.forEach(e => {
         blockSelector.push($('.item' + e + ''))
@@ -134,13 +130,21 @@ function blockPlayer(currentPlayerMove, p2Td, pattern, playerMove) {
     for (var i = 0; i < blockSelector.length; i++) {
       if (!$(blockSelector[i]).hasClass('cross')) {
         if (!$(blockSelector[i]).hasClass('circle')) {
-          checkit = $(blockSelector[i])
+          blockTd = $(blockSelector[i])
         }
       }
     }
   })
-  if (checkit) {
-    changeState(checkit, pattern)
+
+  if (
+    // tic tac toe technique to block the first player
+    $(currentPlayerMove).is('.item1, .item3, .item7, .item9') &&
+    !$('.item5').hasClass('circle') &&
+    playerMove.length === 1
+  ) {
+    changeState($('.item5'), pattern)
+  } else if (blockTd) {
+    changeState(blockTd, pattern)
   } else {
     changeState(p2Td, pattern)
   }
