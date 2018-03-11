@@ -88,15 +88,13 @@ $(function() {
 
           for (var i = 0; i < boardCombinations.length; i++) {
             for (var j = 0; j < boardCombinations[i].length; j++) {
-              if (
-                boardCombinations[i][j] === e &&
-                holdArrays.indexOf(boardCombinations[i])
-              ) {
+              if (boardCombinations[i][j] == e) {
+                //console.log(boardCombinations[i])
                 holdArrays.push(boardCombinations[i])
-                //console.log(holdArrays) // this seems to return what is needed for the later code
               }
             }
           }
+
           //it might be said
           // uniq = holdArrays.filter((elem, i) => {
           //   return (
@@ -106,13 +104,14 @@ $(function() {
           //   )
           // })
           uniq = holdArrays.sort()
+          console.log(holdArrays)
+
           var results = []
           for (var i = 0; i < uniq.length - 1; i++) {
             if (uniq[i + 1] == uniq[i]) {
               results.push(uniq[i])
             }
           }
-          console.log(results)
           results.map(e => {
             e.forEach(e => {
               blockSelector.push($('.item' + e + ''))
@@ -124,6 +123,7 @@ $(function() {
             if (!$(blockSelector[i]).hasClass('cross')) {
               if (!$(blockSelector[i]).hasClass('circle')) {
                 var checkit = $(blockSelector[i])
+                console.log(checkit)
               }
             }
           }
